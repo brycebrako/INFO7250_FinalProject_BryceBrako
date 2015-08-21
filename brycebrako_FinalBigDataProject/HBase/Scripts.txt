@@ -1,0 +1,8 @@
+Creating tables.
+
+create 'businestable', 'binfo', 'ratings', 'categories', 'attributes'
+create 'usertable', 'votes' , 'uinfo', 'compliments'
+create 'reviewtable', 'rinfo', 'votes'
+
+******************************************************************************************
+

@@ -1,0 +1,63 @@
+0. To find the total number of cool, funny, useful votes on the reviews of a particular user. (COMPLEX)
+
+REGISTER piggybank-0.12.0.jar
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/review_json_small.json' USING JsonLoader('votes: (funny: int, useful: int, cool: int), user_id: chararray, review_id: chararray, stars: int, date:chararray, text:chararray, type:chararray, business_id:chararray');
+B = GROUP A BY user_id;
+C = FOREACH B GENERATE group, flatten(A);
+D = FOREACH C GENERATE group, votes.funny, votes.cool, votes.useful;
+E = GROUP D BY group;
+F = FOREACH E GENERATE group, SUM(D.funny), SUM(D.cool), SUM(D.useful);
+G = STORE F INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/review0_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS');
+
+SUM works only on a bag.
+
+********************************************************************************************************************
+1. Yelp User Experience Graph
+
+REGISTER piggybank-0.12.0.jar
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/review_json_small.json' USING JsonLoader('votes: (funny: int, useful: int, cool: int), user_id: chararray, review_id: chararray, stars: int, date:chararray, text:chararray, type:chararray, business_id:chararray');
+B = GROUP A BY user_id;
+C = FOREACH B GENERATE group, A.stars;
+STORE C INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/review1_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS');
+
+
+********************************************************************************************************************
+
+2. The number of reviews over the years.
+Use: To Analyze the usage of the yelp, increasing or decreasing.
+Shows the decrease or fall of usage on across the years.
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/review_json_small.json' USING JsonLoader('votes: (funny: int, useful: int, cool: int), user_id: chararray, review_id: chararray, stars: int, date:datetime, text:chararray, type:chararray, business_id:chararray');
+B = GROUP A BY GetYear(date);
+C = FOREACH B GENERATE group, COUNT(A.review_id);
+STORE C INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/review2_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS');
+DUMP C;
+
+***********************************************************************************************************************
+
+3. The number of 1-star to 5-start ratings given over the years.
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/review_json_small.json' USING JsonLoader('votes: (funny: int, useful: int, cool: int), user_id: chararray, review_id: chararray, stars: int, date:datetime, text:chararray, type:chararray, business_id:chararray');
+B = GROUP A BY (stars, GetYear(date));
+C = FOREACH B GENERATE group.$0, group.$1, COUNT(A.stars);
+STORE C INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/review3_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS');
+dump C;
+
+***********************************************************************************************************************
+4. Percentage of 1-star to 5 - star ratings 
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/review_json_small.json' USING JsonLoader('votes: (funny: int, useful: int, cool: int), user_id: chararray, review_id: chararray, stars: int, date:datetime, text:chararray, type:chararray, business_id:chararray');
+B = GROUP A BY stars;
+C = FOREACH B GENERATE group, COUNT(A.stars);
+STORE C INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/review4_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS');
+dump C;
+
+**************************************************************************************************************************
+5. How positive or how negative a review is.(Using Hive)
+
+How Positive or Negative(by %) a review is. and compare that with the rating to see if it is coinciding. if it tends more to the positive side the rating must be above average and if it towards the negative side it should be below average.
+
+Refer to SentimentAnalysisQuery.txt.
+
+

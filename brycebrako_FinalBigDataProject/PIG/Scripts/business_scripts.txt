@@ -1,0 +1,99 @@
+1. To find the top businesses in a city with respect to rating.
+Use: these are the cities that have the best businesses.
+
+REGISTER json-simple-1.1.jar
+REGISTER google-collections-1.0.jar
+REGISTER elephant-bird-hadoop-compat-4.9.jar
+REGISTER elephant-bird-core-4.9.jar
+REGISTER elephant-bird-pig-4.9.jar
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/business_json_small.json' USING com.twitter.elephantbird.pig.load.JsonLoader('-nestedLoad=true') AS (map[]);
+B = FILTER A BY ((float)$0#'stars' == 5);
+C = FOREACH B GENERATE $0#'city', $0#'name';
+dump C; 
+
+**************************************************************************************************************
+
+2. To find the number of business in a state that have an above average rating.
+
+REGISTER json-simple-1.1.jar
+REGISTER google-collections-1.0.jar
+REGISTER elephant-bird-hadoop-compat-4.9.jar
+REGISTER elephant-bird-core-4.9.jar
+REGISTER elephant-bird-pig-4.9.jar
+REGISTER piggybank-0.12.0.jar
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/business_json_small.json' USING com.twitter.elephantbird.pig.load.JsonLoader('-nestedLoad=true') AS (map[]);
+B = FILTER A BY ((float)$0#'stars' > 3);
+C = GROUP B BY $0#'state';
+D = FOREACH C GENERATE group, COUNT(B);
+E = STORE D INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/business2_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS'); 
+
+****************************************************************************************************************
+
+3. The number of businesses that are open on monday - sunday in a city
+
+REGISTER json-simple-1.1.jar
+REGISTER google-collections-1.0.jar
+REGISTER elephant-bird-hadoop-compat-4.9.jar
+REGISTER elephant-bird-core-4.9.jar
+REGISTER elephant-bird-pig-4.9.jar
+REGISTER piggybank-0.12.0.jar
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/business_json_small.json' USING com.twitter.elephantbird.pig.load.JsonLoader('-nestedLoad=true') AS (map[]);
+B = FILTER A BY ($0#'hours'#'Monday' IS NOT NULL);
+C = GROUP B BY $0#'city';
+D = FOREACH C GENERATE group, COUNT(B);
+E = STORE D INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/business3mon_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS'); 
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/business_json_small.json' USING com.twitter.elephantbird.pig.load.JsonLoader('-nestedLoad=true') AS (map[]);
+B = FILTER A BY ($0#'hours'#'Tuesday' IS NOT NULL);
+C = GROUP B BY $0#'city';
+D = FOREACH C GENERATE group, COUNT(B);
+E = STORE D INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/business3tue_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS');
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/business_json_small.json' USING com.twitter.elephantbird.pig.load.JsonLoader('-nestedLoad=true') AS (map[]);
+B = FILTER A BY ($0#'hours'#'Wednesday' IS NOT NULL);
+C = GROUP B BY $0#'city';
+D = FOREACH C GENERATE group, COUNT(B);
+E = STORE D INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/business3wed_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS');
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/business_json_small.json' USING com.twitter.elephantbird.pig.load.JsonLoader('-nestedLoad=true') AS (map[]);
+B = FILTER A BY ($0#'hours'#'Thursday' IS NOT NULL);
+C = GROUP B BY $0#'city';
+D = FOREACH C GENERATE group, COUNT(B);
+E = STORE D INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/business3thurs_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS');
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/business_json_small.json' USING com.twitter.elephantbird.pig.load.JsonLoader('-nestedLoad=true') AS (map[]);
+B = FILTER A BY ($0#'hours'#'Friday' IS NOT NULL);
+C = GROUP B BY $0#'city';
+D = FOREACH C GENERATE group, COUNT(B);
+E = STORE D INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/business3fri_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS');
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/business_json_small.json' USING com.twitter.elephantbird.pig.load.JsonLoader('-nestedLoad=true') AS (map[]);
+B = FILTER A BY ($0#'hours'#'Saturday' IS NOT NULL);
+C = GROUP B BY $0#'city';
+D = FOREACH C GENERATE group, COUNT(B);
+E = STORE D INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/business3sat_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS');
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/business_json_small.json' USING com.twitter.elephantbird.pig.load.JsonLoader('-nestedLoad=true') AS (map[]);
+B = FILTER A BY ($0#'hours'#'Sunday' IS NOT NULL);
+C = GROUP B BY $0#'city';
+D = FOREACH C GENERATE group, COUNT(B);
+E = STORE D INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/business3sun_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS');
+
+****************************************************************************************************************************
+
+4. The most number of businesses reviewed in cities.
+
+REGISTER json-simple-1.1.jar
+REGISTER google-collections-1.0.jar
+REGISTER elephant-bird-hadoop-compat-4.9.jar
+REGISTER elephant-bird-core-4.9.jar
+REGISTER elephant-bird-pig-4.9.jar
+REGISTER piggybank-0.12.0.jar
+
+A = LOAD '/home/bryce/Documents/BigDataFinalProject/jsondata/business_json_small.json' USING com.twitter.elephantbird.pig.load.JsonLoader('-nestedLoad=true') AS (map[]);
+B = GROUP A BY $0#'city';
+C = FOREACH B GENERATE group, COUNT(A);
+D = STORE C INTO '/home/bryce/Documents/BigDataFinalProject/jsondata/output/business4_output.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'NO_MULTILINE', 'WINDOWS'); 
